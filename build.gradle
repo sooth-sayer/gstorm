@@ -3,11 +3,10 @@ plugins {
     id 'maven-publish'
     id 'jacoco'
     id "com.jfrog.bintray" version '1.6'
-    id 'net.researchgate.release' version '2.3.5'
 }
 
-group = 'io.github.kdabir.gstorm'
-description = "Groovy Single Table ORM"
+group = 'che.sooth-sayer.gstorm'
+description = "Groovy Single Table ORM (kdabir fork)"
 
 sourceSets {
     main.groovy.srcDirs = ['src']
@@ -64,19 +63,19 @@ publishing {
                     resolveStrategy = Closure.DELEGATE_FIRST
 
                     description project.description
-                    url "https://github.com/kdabir/gstorm"
+                    url "https://github.com/sooth-sayer/gstorm"
 
                     developers {
                         developer {
-                            id 'kdabir'
-                            name 'Kunal Dabir'
+                            id 'sooth-sayer'
+                            name 'Che'
                         }
                     }
 
                     scm {
-                        url 'https://github.com/kdabir/gstorm'
-                        connection 'scm:git://github.com/kdabir/gstorm.git'
-                        developerConnection 'scm:git://github.com/kdabir/gstorm.git'
+                        url 'https://github.com/sooth-sayer/gstorm'
+                        connection 'scm:git://github.com/sooth-sayer/gstorm.git'
+                        developerConnection 'scm:git://github.com/sooth-sayer/gstorm.git'
                     }
 
                     licenses {
@@ -102,11 +101,13 @@ bintray {
     def projectDescription = project.description
 
     pkg {
-        repo = 'maven'
+        repo = 'gstorm'
+        userOrg = 'che'
+
         name = projectName          // somehow project.* doesn't work in this closure
         desc = projectDescription
         licenses = ['MIT']
-        vcsUrl = 'https://github.com/kdabir/gstorm'
+        vcsUrl = 'https://github.com/sooth-sayer/gstorm'
     }
     dryRun = false // whether to run this as dry-run, without deploying
 }
@@ -114,18 +115,6 @@ bintray {
 String getPropertyOrUseDefault(String propertyName, String defaultValue) {
     hasProperty(propertyName) ? getProperty(propertyName) : defaultValue
 }
-
-release {
-    tagTemplate = 'v$version'
-
-    if (System.env.CI == 'true') { // only on CI servers
-        failOnUnversionedFiles = false
-    }
-
-}
-
-afterReleaseBuild.dependsOn bintrayUpload
-
 
 jacocoTestReport {
     reports {
