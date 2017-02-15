@@ -13,7 +13,8 @@ class CreateTableQueryBuilder extends AbstractQueryBuilder {
         def columnDefs = classMetaData.fields.collect { field -> "${field.name} ${field.columnType}" }
 
         if (!classMetaData.isWithoutId()) {
-            columnDefs.add(0, "${classMetaData.idFieldName ?: 'ID'} NUMERIC GENERATED ALWAYS AS IDENTITY PRIMARY KEY")
+            def idDefinition = classMetaData.getIdDefinition() ?: "NUMERIC GENERATED ALWAYS AS IDENTITY PRIMARY KEY"
+            columnDefs.add(0, "${classMetaData.idFieldName ?: 'ID'} ${idDefinition}")
         }
 
         new StringBuilder("CREATE").append(SPACE)

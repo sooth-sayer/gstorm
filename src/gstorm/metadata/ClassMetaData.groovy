@@ -11,6 +11,7 @@ class ClassMetaData {
     final Class modelClass
     final String tableName
     final FieldMetaData idField
+    final String idDefinition
     private final List<FieldMetaData> fields
     private Map _fieldsCache        // just to avoid iterating over list of fields and finding by name.
 
@@ -19,6 +20,7 @@ class ClassMetaData {
         this.tableName = extractTableName(modelClass)
         this.idField = getIdFieldOfClass(modelClass)
         this.fields = getOtherFieldsOfClass(modelClass)
+        this.idDefinition = idDefinition(modelClass)
         this._fieldsCache = this.fields.collectEntries { fieldMetaData -> [fieldMetaData.name, fieldMetaData] }
     }
 
@@ -50,6 +52,10 @@ class ClassMetaData {
         modelClass.isAnnotationPresent(Csv)
     }
 
+    String getIdDefinition() {
+      this.idDefinition
+    }
+
     private List<FieldMetaData> getOtherFieldsOfClass(Class modelClass) {
         fieldsDeclaredIn(modelClass)
                 .findAll { !it.isAnnotationPresent(Id) }
@@ -63,6 +69,10 @@ class ClassMetaData {
 
     private ArrayList<Field> fieldsDeclaredIn(Class modelClass) {
         modelClass.declaredFields.findAll { !it.synthetic }
+    }
+
+    private String idDefinition(Class modelClass) {
+        modelClass.getAnnotation(Table)?.idDefinition()
     }
 
 }
