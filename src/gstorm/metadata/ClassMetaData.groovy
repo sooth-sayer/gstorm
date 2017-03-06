@@ -2,6 +2,7 @@ package gstorm.metadata
 
 import gstorm.Csv
 import gstorm.Id
+import gstorm.Skip
 import gstorm.Table
 import gstorm.WithoutId
 
@@ -58,7 +59,7 @@ class ClassMetaData {
 
     private List<FieldMetaData> getOtherFieldsOfClass(Class modelClass) {
         fieldsDeclaredIn(modelClass)
-                .findAll { !it.isAnnotationPresent(Id) }
+                .findAll { !it.isAnnotationPresent(Id) && !it.isAnnotationPresent(Skip) }
                 .collect { field -> new FieldMetaData(field) }
     }
 
