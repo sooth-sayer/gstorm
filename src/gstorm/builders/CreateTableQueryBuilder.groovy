@@ -10,7 +10,10 @@ class CreateTableQueryBuilder extends AbstractQueryBuilder {
 
     String build() {
         def tableName = classMetaData.tableName
-        def columnDefs = classMetaData.fields.collect { field -> "${field.name} ${field.columnType}" }
+        def columnDefs = classMetaData.fields.collect { field ->
+          def columnConstraintsStr = field.columnConstraints ? " ${field.columnConstraints}" : ''
+          "${field.name} ${field.columnType}${columnConstraintsStr}"
+        }
 
         if (!classMetaData.isWithoutId()) {
             def idDefinition = classMetaData.getIdDefinition() ?: "NUMERIC GENERATED ALWAYS AS IDENTITY PRIMARY KEY"
